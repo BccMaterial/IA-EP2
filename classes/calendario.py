@@ -9,5 +9,17 @@ class Calendario:
   `(avião, horáio)` (???)
 
   """
-  def __init__():
+  def __init__(self):
     raise NotImplemented("Calendario não implementado")
+
+  def definir_variaveis(self):
+    raise NotImplemented("definir_variaveis não implementado")
+
+  def definir_restricoes(self):
+    raise NotImplemented("definir_restricoes não implementado")
+
+  def rodar(self):
+    raise NotImplemented("rodar não implementado")
+
+  def imprime_resposta(self):
+    raise NotImplemented("imprime_resposta não implementado")
