@@ -5,15 +5,22 @@ import random
 #Indivíduo: no nosso contexto, o indivíduo sera uma lista de valores inteiros que indica as aeronaves dedicadas a cada voo
 
 rotasVoo = [ #Lista incluindo o local de partida, chegada, tempo de voo e número de voos
-    ("São Paulo(GRU)", "Rio de Janeiro(GIG)", 1.0, 10),
-    ("São Paulo(GRU)", "Brasilia", 2.0, 6)
-
-
-] #Terminar de copiar da tabela depois
+    ("São Paulo (GRU)",       "Rio de Janeiro (GIG)",   1.0, 10),
+    ("São Paulo (GRU)",       "Brasilia (BSB)",         2.0, 6),
+    ("São Paulo (GRU)",       "Belo Horizonte (CNF)",   1.5, 8),
+    ("Rio de Janeiro (GIG)",  "São Paulo (GRU)",        1.0, 10),
+    ("Rio de Janeiro (GIG)",  "Brasília (BSB)",         2.0, 5),
+    ("Rio de Janeiro (GIG)",  "Belo Horizonte (CNF)",   1.5, 6),
+    ("Brasília (BSB)",        "São Paulo (GRU)",        2.0, 6),
+    ("Brasília (BSB)",        "Rio de Janeiro (GIG)",   2.0, 5),
+    ("Brasília (BSB)",        "Belo Horizonte (CNF)",   1.5, 7),
+    ("Belo Horizonte (CNF)",  "São Paulo (GRU)",        1.5, 8),
+    ("Belo Horizonte (CNF)",  "Rio de Janeiro (GIG)",   1.5, 6),
+    ("Belo Horizonte (CNF)",  "Brasília (BSB)",         1.5, 7)
+]
 
 def calcular_total_voos(): #Visita cada tupla e retorna o valor total de voos
     val = 0
-
     for voo in rotasVoo:
         val+= voo[3]
     return val
