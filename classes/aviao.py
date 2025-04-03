@@ -2,7 +2,7 @@ from classes.geneticos.gene import Gene
 from classes.restricoes.satisfacao_restricoes import SatisfacaoRestricoes
 
 class Aviao(Gene):
-  def __init__(self):
+  def __init__(self, linhas_aereas):
     # Lista incluindo o local de partida, chegada, tempo de voo e número de voos
     self.rotasVoo = [ 
       # Local de partida        Local de chegada          Hrs   Num
@@ -19,7 +19,12 @@ class Aviao(Gene):
       ("Belo Horizonte (CNF)",  "Rio de Janeiro (GIG)",   1.5,  6),
       ("Belo Horizonte (CNF)",  "Brasília (BSB)",         1.5,  7)
     ]
-
+    
+    # Vamos precisar da classe LinhasAereas as seguintes info:
+    # - Qtd de aviões
+    # - Qtd de viagens já preenchidas
+    # - Qtd de viagens necessárias
+    self.linhas_aereas = linhas_aereas
     self.variaveis = []
     self.dominio = {}
 
@@ -38,7 +43,7 @@ class Aviao(Gene):
       "20:00", "20:30", "21:00", "21:30", "22:00", "22:30",
       "23:00", "23:30"
     ]
-    possiveisRotas = [(x[0], x[1], x[2]) for x in self.totalVoos]
+    possiveisRotas = [(x[0], x[1], x[2]) for x in self.rotasVoo]
 
     for variavel in self.variaveis:
       # As tuplas representam: Origem, Destino, Tempo
