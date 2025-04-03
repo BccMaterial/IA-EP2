@@ -24,14 +24,21 @@ class LinhasAereas(Individuo):
     ]
     self.variaveis = []
     self.dominios = {}
+    self.genes = []
     self.totalVoos = 0
 
     # Visita cada tupla e retorna o valor total de voos
     for voo in self.rotasVoo:
         self.totalVoos += voo[3]
 
-  def define_restricoes(self):
+  def definir_restricoes(self):
     self.restricoes = SatisfacaoRestricoes(self.variaveis, self.dominios)
+
+  def definir_variaveis(self):
+    pass
+
+  def definir_dominios(self):
+    pass
 
   def mutacao(self):
     pass
@@ -40,11 +47,17 @@ class LinhasAereas(Individuo):
     pass
 
   def fitness(self):
-    pass
+    # fitness = qtdAvioes / totalVoos
+    return len(self.genes) / self.totalVoos
   
   # Override do "to_string"
-  def __str__(self):
-    return ""
+  # def __str__(self):
+  #   return ""
+
+  def gerar_genes(self):
+    self.definir_variaveis()
+    self.definir_dominios()
+    self.genes = self.restricoes.busca_backtracking()
 
 class PopulacaoLinhasAereas(Populacao):
   pass
