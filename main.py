@@ -44,4 +44,27 @@ def gerar_populacao():
         pop.append(gerar_individuo())
     return pop
 
-print(gerar_populacao())
+def fitness(individuo): #Função de fitness considerando as restrições do problema
+    val_penalidade = 0 #Valor que é subtraido do fitness de um indivíduo caso ele desrespeite regras
+    voos_aeronaves = {}
+    pos_aeronave = 0
+
+    for rota in rotasVoo:
+        local_partida, local_chegada, duracao_voo, numero_voos = rota #Associa cada elemento das tupla a 4 variáveis
+
+        for i in range(numero_voos):
+            aeronave = individuo[pos_aeronave]
+            pos_aeronave += 1 #Avança uma posição no indivíduo
+
+            if aeronave not in voos_aeronaves:
+                voos_aeronaves[aeronave] = []
+
+            voos_aeronaves[aeronave].append((local_partida, local_chegada, duracao_voo))
+
+    #Restrição de conflito de horários
+    for aeronaves, voos in voos_aeronaves.items(): #items retorna os valores de cada key do dicinário
+        voos.sort(key = lambda x: x[2]) #lambda é uma função anonima que aceita qualquer número de argumentos e tem uma única expressão. No nosso caso, retorna sempre o terceiro elemento da tupla(duração da voo)
+        horario = 0 #Começa a meia noite
+
+        for i in range(len(voos)): #Percorre as tuplas do dicionário
+            
