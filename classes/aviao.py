@@ -30,58 +30,86 @@ class Aviao(Gene):
     # - Qtd de viagens já preenchidas
     # - Qtd de viagens necessárias
     self.linhas_aereas = linhas_aereas
-    self.rota = []
-    # self.variaveis = []
-    # self.dominios = {}
-    self.gerar_gene()
+    self.rota = None
+    self.variaveis = []
+    self.dominios = {}
+    while self.rota is None:
+      self.gerar_gene_backtracking()
     self.qtdVoos = len(self.rota)
 
   def definir_restricoes(self):
     self.restricoes = SatisfacaoRestricoes(self.variaveis, self.dominios)
-    
     # Restrições de manutenção fixas
     self.restricoes.adicionar_restricao(restricoes.Manutencao(0))
     self.restricoes.adicionar_restricao(restricoes.Manutencao(1))
     self.restricoes.adicionar_restricao(restricoes.Manutencao(47))
-    
-    # Restrição de origem/destino (primeiro e último voo)
-    self.restricoes.adicionar_restricao(restricoes.OrigemIgualDestino(2, 46))
 
     # Definição da primeira viagem:
     # Pega primeira cidade (Q foi sorteada)
-    ultima_rota = self.rotasVoo[0]
-    tempo_viagem = int(ultima_rota[2] * 2) - 1
-    ultimo_indice = 3
+    ultima_rota = random.choice(self.rotasVoo[:-1])
+    print(f"Primeira rota: {ultima_rota}")
+    tempo_viagem = int(ultima_rota[2] * 2)
+    ultimo_indice = 2
+    
+    ###############################
+    ### Restrição destino final ###
+    ###############################
+
+    possives_rotas_finais = [x for x in self.rotasVoo if x[0] == ultima_rota[1]]
+    rota_final = random.choice(possives_rotas_finais)
+    rota_final_tempo = int(rota_final[2] * 2)
+
+    # Até quando o while vai:
+    limite_fim = 46 - rota_final_tempo - 4
+    limite_inicio = ultimo_indice + tempo_viagem + 3
+
+    # Manutenções da última rota
+    for i in range(47 - rota_final_tempo, 47):
+      self.restricoes.adicionar_restricao(restricoes.TempoEsperado(i, float(rota_final_tempo / 2)))
+      self.restricoes.adicionar_restricao(restricoes.OrigemIgualDestino(2, i))
+      self.restricoes.adicionar_restricao(restricoes.OrigemIgualDestino(i, 47 - rota_final_tempo - 4))
+
+    self.restricoes.adicionar_restricao(restricoes.TempoViagem(46 - rota_final_tempo, rota_final_tempo))
+
+    # Manutenções da última rota
+    for i in range(47 - rota_final_tempo - 3, 47 - rota_final_tempo):
+      self.restricoes.adicionar_restricao(restricoes.Manutencao(i))
+
+    ################################################################
 
     # Adiciona os slots da viagem
     self.restricoes.adicionar_restricao(restricoes.TempoViagem(ultimo_indice, tempo_viagem))
+
+    for i in range(ultimo_indice, ultimo_indice + tempo_viagem):
+      self.restricoes.adicionar_restricao(restricoes.TempoEsperado(i, float(tempo_viagem / 2)))
 
     ultimo_indice += tempo_viagem
     for i in range(0, 3):
       self.restricoes.adicionar_restricao(restricoes.Manutencao(ultimo_indice + i))
     ultimo_indice += 3
 
-
-    while ultimo_indice < 38:
+    print(f"limite_fim: {limite_fim}")
+    print(f"limite_inicio: {limite_inicio}")
+    while ultimo_indice < limite_fim - 5:
       ultimo_destino = ultima_rota[1]
       proximas_rotas = [x for x in self.rotasVoo if x[0] == ultimo_destino]
       proxima_rota = random.choice(proximas_rotas)
+      tempo_viagem = int(proxima_rota[2] * 2)
 
-      # Coloca a proxima rota como primeiro elemento no self.rotasVoo
-      rota_manutencao = self.rotasVoo[-1]
-      temp_rotasVoo = self.rotasVoo[1:len(self.rotasVoo)-1]
-      self.rotasVoo = [proxima_rota, *temp_rotasVoo, rota_manutencao]
-      # -------------------------------------------------------------
-
-      tempo_viagem = int(proxima_rota[2] * 2) - 1
-      # Adiciona os slots da viagem
       self.restricoes.adicionar_restricao(restricoes.TempoViagem(ultimo_indice, tempo_viagem))
+
+      for i in range(ultimo_indice, ultimo_indice + tempo_viagem):
+        self.restricoes.adicionar_restricao(restricoes.TempoEsperado(i, float(tempo_viagem / 2)))
+        self.restricoes.adicionar_restricao(restricoes.OrigemIgualDestino(i, ultimo_indice - 4))
 
       ultimo_indice += tempo_viagem
       for i in range(0, 3):
-        self.restricoes.adicionar_restricao(restricoes.Manutencao(ultimo_indice+i))
+        self.restricoes.adicionar_restricao(restricoes.Manutencao(ultimo_indice + i))
       ultimo_indice += 3
       ultima_rota = proxima_rota
+
+    print(f"ultimo_indice parou em: {ultimo_indice - 1}")
+    print(f"slots que sobraram: {44 - ultimo_indice - rota_final_tempo}")
 
   def gerar_gene(self):
     slot_manutencao = self.rotasVoo[-1]
@@ -100,11 +128,11 @@ class Aviao(Gene):
     ultimo_indice = 3
 
     # Adiciona os slots da viagem
-    for i in range(0, tempo_viagem):
+    for _ in range(0, tempo_viagem):
       self.rota.append(ultima_rota)
 
     ultimo_indice += tempo_viagem
-    for i in range(0, 3):
+    for _ in range(0, 3):
       self.rota.append(slot_manutencao)
     ultimo_indice += 3
 
@@ -116,7 +144,7 @@ class Aviao(Gene):
 
       tempo_viagem = int(proxima_rota[2] * 2)
       # Adiciona os slots da viagem
-      for i in range(0, tempo_viagem):
+      for _ in range(0, tempo_viagem):
         self.rota.append(proxima_rota)
 
       ultimo_indice += tempo_viagem
@@ -163,5 +191,3 @@ class Aviao(Gene):
     self.definir_variaveis()
     self.definir_restricoes()
     self.rota = self.restricoes.busca_backtracking()
-
-  

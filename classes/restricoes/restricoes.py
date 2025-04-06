@@ -41,32 +41,10 @@ class OrigemIgualDestino(Restricao):
     self.voo2 = voo2
 
   def esta_satisfeita(self, atribuicao):
-    # Não sei se vai precisar desses dois ifs comentados
-    # if self.slot[0] == None and self.voo_i == 0:
-    #   return True
-    # if self.slot[0] is not None and self.voo_i == 0:
-    #   return False
     if self.voo1 not in atribuicao or self.voo2 not in atribuicao:
       return True
     
     return atribuicao[self.voo1][0] == atribuicao[self.voo2][1]
-
-class DestinoIgualOrigem(Restricao):
-  def __init__(self, voo1, voo2):
-    super().__init__([voo1, voo2])
-    self.voo1 = voo1
-    self.voo2 = voo2
-
-  def esta_satisfeita(self, atribuicao):
-    if self.voo_atual not in atribuicao or self.proximo_voo not in atribuicao:
-      return True
-
-    # Se algum dos slots é manutenção, não há restrição
-    if atribuicao[self.voo2] == (None, None, 0) or atribuicao[self.voo1] == (None, None, 0):
-      return True
-
-    # Verifica se o destino do voo_atual == origem do proximo_voo
-    return atribuicao[self.voo1][1] == atribuicao[self.voo2][0]
 
 class TempoViagem(Restricao):
   def __init__(self, voo, slots):
@@ -74,9 +52,22 @@ class TempoViagem(Restricao):
     self.slots = [x for x in range(voo, voo + slots)]
 
   def esta_satisfeita(self, atribuicao):
-    # Qualquer atribuicao não preenchida, retorna True
     if any(atribuicao[slot] not in atribuicao for slot in self.slots):
       return True
 
-    return all(atribuicao[slot] == atribuicao[self.voo] for slot in self.slots)
+    return all(\
+      atribuicao[slot] == atribuicao[self.voo] \
+      for slot in self.slots \
+    )
 
+class TempoEsperado(Restricao):
+  def __init__(self, voo, tempo):
+    super().__init__([voo])
+    self.voo = voo
+    self.tempo = tempo
+
+  def esta_satisfeita(self, atribuicao):
+    if self.voo not in atribuicao:
+      return True
+    
+    return atribuicao[self.voo][2] == self.tempo
