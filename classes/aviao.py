@@ -33,8 +33,9 @@ class Aviao(Gene):
     self.rota = None
     self.variaveis = []
     self.dominios = {}
+    # While pra evitar solução impossível (caso haja)
     while self.rota is None:
-      self.gerar_gene_backtracking()
+      self.gerar_gene()
     self.qtdVoos = len(self.rota)
 
   def definir_restricoes(self):
@@ -121,61 +122,6 @@ class Aviao(Gene):
           self.restricoes.adicionar_restricao(restricoes.Manutencao(i))
           ultimo_indice += 1
 
-  def gerar_gene(self):
-    slot_manutencao = self.rotasVoo[-1]
-    temp_lista = self.rotasVoo[:len(self.rotasVoo)-1]
-    random.shuffle(temp_lista)
-    self.rotasVoo = [*temp_lista, slot_manutencao]
-    # Restrições de manutenção fixas
-    self.rota.append(slot_manutencao)
-    self.rota.append(slot_manutencao)
-
-    # Definição da primeira viagem:
-    # Pega primeira cidade (Q foi sorteada)
-    ultima_rota = self.rotasVoo[0]
-    origem_rota = ultima_rota[0]
-    tempo_viagem = int(ultima_rota[2] * 2)
-    ultimo_indice = 3
-
-    # Adiciona os slots da viagem
-    for _ in range(0, tempo_viagem):
-      self.rota.append(ultima_rota)
-
-    ultimo_indice += tempo_viagem
-    for _ in range(0, 3):
-      self.rota.append(slot_manutencao)
-    ultimo_indice += 3
-
-    ultimo_destino = None
-    while ultimo_indice < 42:
-      ultimo_destino = ultima_rota[1]
-      proximas_rotas = [x for x in self.rotasVoo if x[0] == ultimo_destino]
-      proxima_rota = random.choice(proximas_rotas)
-
-      tempo_viagem = int(proxima_rota[2] * 2)
-      # Adiciona os slots da viagem
-      for _ in range(0, tempo_viagem):
-        self.rota.append(proxima_rota)
-
-      ultimo_indice += tempo_viagem
-      for i in range(0, 3):
-        self.rota.append(slot_manutencao)
-      ultimo_indice += 3
-      ultima_rota = proxima_rota
-
-    if ultima_rota[1] != origem_rota:
-      rota_final = [x for x in self.rotasVoo if x[0] == ultima_rota[1] and x[1] == origem_rota]
-      proxima_rota = rota_final[0] if len(rota_final) > 0 else None
-      tempo_viagem = int(proxima_rota[2] * 2)
-
-      for i in range(0, tempo_viagem):
-        self.rota.append(proxima_rota)
-      ultimo_indice += tempo_viagem
-
-
-    print(f"Tamanho rota: {len(self.rota)}")
-    self.rota.append(self.rotasVoo[-1])
-
   def definir_variaveis(self):
     # "00:00", "00:30", "01:00", "01:30", "02:00", "02:30",
     # "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
@@ -193,7 +139,7 @@ class Aviao(Gene):
     for variavel in self.variaveis:
       self.dominios[variavel] = self.rotasVoo
 
-  def gerar_gene_backtracking(self):
+  def gerar_gene(self):
     slot_manutencao = self.rotasVoo[-1]
     temp_lista = self.rotasVoo[:len(self.rotasVoo)-1]
     random.shuffle(temp_lista)
