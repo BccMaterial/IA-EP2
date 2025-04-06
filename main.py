@@ -1,8 +1,6 @@
+from classes.aviao import Aviao
+from classes.linhas_aereas import LinhasAereas
 import random
-
-#Gene: no nosso contexto, um gene será uma aeronave alocada a um determinado voo
-#Domínio: no nosso contexto, o domínio sera o conjunto de aeronaves disponíveis para uma determinada rota
-#Indivíduo: no nosso contexto, o indivíduo sera uma lista de valores inteiros que indica as aeronaves dedicadas a cada voo
 
 rotasVoo = [
     ("São Paulo (GRU)", "Rio de Janeiro (GIG)", 1.0, 10),
@@ -124,3 +122,10 @@ def selecao(populacao, fitness, torneio_len):
 
     for i in range(2):
         selecao_torneio = random.sample()
+
+linhas_aereas = LinhasAereas(random.randint(0, 20))
+# print(linhas_aereas)
+aviao = Aviao(linhas_aereas)
+
+for x in range(0, len(aviao.rota)):
+  print(f"{x}:\t{aviao.rota[x]}")

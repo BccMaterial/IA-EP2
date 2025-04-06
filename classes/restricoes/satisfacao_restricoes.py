@@ -41,10 +41,10 @@ class SatisfacaoRestricoes():
         procurando por estados válidos
         """
 
-        # Retorna sucesso quando todas as variáveis forem atribuídas
         if qtd_atribuicoes == 0:
             qtd_atribuicoes = len(self.variaveis)
 
+        # Retorna sucesso quando todas as variáveis forem atribuídas
         if len(atribuicao) == qtd_atribuicoes:
             return atribuicao
 

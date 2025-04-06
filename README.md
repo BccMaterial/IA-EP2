@@ -28,20 +28,20 @@ o número total de aviões necessários para cobrir todos os voos.
 Para ajudar a visualizar o problema, aqui está uma tabela com as rotas, os tempos de voo 
 e o número de voos diários estimados:
 
-| Origem               | Destino              | Tempo de Voo (Horas) | Número de voos diários|
-|----------------------|----------------------|----------------------|-----------------------|
-| São Paulo (GRU)      | Rio de Janeiro (GIG) | 1.0                  | 10                    |
-| São Paulo (GRU)      | Brasília (BSB)       | 2.0                  | 6                     |
-| São Paulo (GRU)      | Belo Horizonte (CNF) | 1.5                  | 8                     |
-| Rio de Janeiro (GIG) | São Paulo (GRU)      | 1.0                  | 10                    |
-| Rio de Janeiro (GIG) | Brasília (BSB)       | 2.0                  | 5                     |
-| Rio de Janeiro (GIG) | Belo Horizonte (CNF) | 1.5                  | 6                     |
-| Brasília (BSB)       | São Paulo (GRU)      | 2.0                  | 6                     |
-| Brasília (BSB)       | Rio de Janeiro (GIG) | 2.0                  | 5                     |
-| Brasília (BSB)       | Belo Horizonte (CNF) | 1.5                  | 7                     |
-| Belo Horizonte (CNF) | São Paulo (GRU)      | 1.5                  | 8                     |
-| Belo Horizonte (CNF) | Rio de Janeiro (GIG) | 1.5                  | 6                     |
-| Belo Horizonte (CNF) | Brasília (BSB)       | 1.5                  | 7                     |
+| Origem               | Destino              | Tempo de Voo (Horas) | Número de voos diários |
+|----------------------|----------------------|----------------------|------------------------|
+| São Paulo (GRU)      | Rio de Janeiro (GIG) | 1.0                  | 10                     |
+| São Paulo (GRU)      | Brasília (BSB)       | 2.0                  | 6                      |
+| São Paulo (GRU)      | Belo Horizonte (CNF) | 1.5                  | 8                      |
+| Rio de Janeiro (GIG) | São Paulo (GRU)      | 1.0                  | 10                     |
+| Rio de Janeiro (GIG) | Brasília (BSB)       | 2.0                  | 5                      |
+| Rio de Janeiro (GIG) | Belo Horizonte (CNF) | 1.5                  | 6                      |
+| Brasília (BSB)       | São Paulo (GRU)      | 2.0                  | 6                      |
+| Brasília (BSB)       | Rio de Janeiro (GIG) | 2.0                  | 5                      |
+| Brasília (BSB)       | Belo Horizonte (CNF) | 1.5                  | 7                      |
+| Belo Horizonte (CNF) | São Paulo (GRU)      | 1.5                  | 8                      |
+| Belo Horizonte (CNF) | Rio de Janeiro (GIG) | 1.5                  | 6                      |
+| Belo Horizonte (CNF) | Brasília (BSB)       | 1.5                  | 7                      |
 
 O objetivo é minimizar o número de aeronaves usadas para cobrir todas as rotas de voo de 
 ida e volta para cada dia. Podemos usar um solver de satisfação de restrições para 
