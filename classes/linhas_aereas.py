@@ -35,15 +35,10 @@ class LinhasAereas(Individuo):
 
     # Visita cada tupla e retorna o valor total de voos
     self.voosNecessarios = sum([x[3] for x in self.rotasVoo])
+    self.totalVoos = 0
 
     # Gera os genes (Aviões)
     self.gerar_individuo()
-
-  # RESTRIÇÕES
-  # qtdVoos == totalVoos 
-  # Obs.: Capaz nem de precisar disso.
-  def definir_restricoes(self):
-    self.restricoes = SatisfacaoRestricoes(self.variaveis, self.dominios)
 
   def mutacao(self):
     pass
@@ -62,14 +57,17 @@ class LinhasAereas(Individuo):
     f"""
 SENAC Linhas Aéreas
 ---------------------------------------
-Qtd. total de Voos: {self.voosNecessarios}
+Qtd. total de Voos: {self.totalVoos}
+Qtd. voos necessários: {self.voosNecessarios}
 Qtd. de aviões: {self.qtdAvioes}
 """
 
   def gerar_individuo(self):
     # Pra cada avião, cria um objeto Aviao
-    # for _ in range(self.qtdAvioes):
-        # self.genes.append(Aviao(self)) # Tá certo 👍
+    for _ in range(self.qtdAvioes):
+      aviao = Aviao(self)
+      self.genes.append(aviao)
+      self.totalVoos += aviao.qtdVoos
     pass
 
 class PopulacaoLinhasAereas(Populacao):

@@ -36,7 +36,7 @@ class Aviao(Gene):
     # While pra evitar solução impossível (caso haja)
     while self.rota is None:
       self.gerar_gene()
-    self.qtdVoos = len(self.rota)
+    # self.qtdVoos = len(self.rota)
 
   def definir_restricoes(self):
     self.restricoes = SatisfacaoRestricoes(self.variaveis, self.dominios)
@@ -49,7 +49,6 @@ class Aviao(Gene):
     # Pega primeira cidade (Q foi sorteada)
     ultima_rota = random.choice(self.rotasVoo[:-1])
     origem_rota = ultima_rota[0]
-    print(f"Primeira rota: {ultima_rota}")
     tempo_viagem = int(ultima_rota[2] * 2)
     ultimo_indice = 2
     
@@ -78,6 +77,7 @@ class Aviao(Gene):
 
     for i in range(ultimo_indice, ultimo_indice + tempo_viagem):
       self.restricoes.adicionar_restricao(restricoes.RotaEspecifica(i, ultima_rota))
+    self.qtdVoos += 1
 
     ultimo_indice += tempo_viagem
     for i in range(0, 3):
@@ -100,11 +100,9 @@ class Aviao(Gene):
           self.restricoes.adicionar_restricao(restricoes.Manutencao(ultimo_indice + i))
         ultimo_indice += 3
         ultima_rota = proxima_rota
+        self.qtdVoos += 1
       else:
         proximas_rotas = [x for x in self.rotasVoo if x[0] == ultimo_destino and x[1] == origem_rota]
-        print(f"Próximas rotas: {proximas_rotas}")
-        print(f"Ultimo destino: {ultimo_destino}")
-        print(f"O avião começou em: {origem_rota}")
         proxima_rota = proximas_rotas[0] if len(proximas_rotas) > 0 else None
 
         # Não dá tempo de fazer outras viagens, então entrará em manutenção
@@ -117,6 +115,7 @@ class Aviao(Gene):
         for i in range(ultimo_indice, ultimo_indice + tempo_viagem):
           self.restricoes.adicionar_restricao(restricoes.RotaEspecifica(i, proxima_rota))
         ultimo_indice += tempo_viagem
+        self.qtdVoos += 1
 
         for i in range(ultimo_indice, 47):
           self.restricoes.adicionar_restricao(restricoes.Manutencao(i))
@@ -143,6 +142,7 @@ class Aviao(Gene):
     slot_manutencao = self.rotasVoo[-1]
     temp_lista = self.rotasVoo[:len(self.rotasVoo)-1]
     random.shuffle(temp_lista)
+    self.qtdVoos = 0
     self.rotasVoo = [*temp_lista, slot_manutencao]
     self.definir_variaveis()
     self.definir_restricoes()
