@@ -101,10 +101,18 @@ class Aviao(Gene):
         ultima_rota = proxima_rota
       else:
         proximas_rotas = [x for x in self.rotasVoo if x[0] == ultimo_destino and x[1] == origem_rota]
-        print(proximas_rotas)
-        proxima_rota = proximas_rotas[0] if len(proximas_rotas) > 0 else random.choice([x for x in self.rotasVoo if x[0] == ultimo_destino])
-        tempo_viagem = int(proxima_rota[2] * 2)
+        print(f"Próximas rotas: {proximas_rotas}")
+        print(f"Ultimo destino: {ultimo_destino}")
+        print(f"O avião começou em: {origem_rota}")
+        proxima_rota = proximas_rotas[0] if len(proximas_rotas) > 0 else None
 
+        # Não dá tempo de fazer outras viagens, então entrará em manutenção
+        if proxima_rota is None:
+          for i in range(ultimo_indice, 47):
+            self.restricoes.adicionar_restricao(restricoes.Manutencao(i))
+          break
+
+        tempo_viagem = int(proxima_rota[2] * 2)
         for i in range(ultimo_indice, ultimo_indice + tempo_viagem):
           self.restricoes.adicionar_restricao(restricoes.RotaEspecifica(i, proxima_rota))
         ultimo_indice += tempo_viagem
