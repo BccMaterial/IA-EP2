@@ -71,3 +71,15 @@ class TempoEsperado(Restricao):
       return True
     
     return atribuicao[self.voo][2] == self.tempo
+
+class RotaEspecifica(Restricao):
+  def __init__(self, voo, rota):
+    super().__init__([voo])
+    self.voo = voo
+    self.rota = rota
+
+  def esta_satisfeita(self, atribuicao):
+    if self.voo not in atribuicao:
+      return True
+
+    return atribuicao[self.voo] == self.rota
