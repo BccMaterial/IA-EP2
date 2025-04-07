@@ -39,6 +39,12 @@ class Aviao(Gene):
     # self.qtdVoos = len(self.rota)
 
   def definir_restricoes(self):
+    """
+    Com base nas restrições do problema, adicionamos as restrições das rotas.
+    A definição das restrições é feita de forma aleatória, ou seja, a rota traçada
+    pelo avião (gene) é randomizada, mas sempre é mantido como manutenção os dois primeiros
+    slots (00:00 e 00:30), e o último (23:30).
+    """
     self.restricoes = SatisfacaoRestricoes(self.variaveis, self.dominios)
     # Restrições de manutenção fixas
     self.restricoes.adicionar_restricao(restricoes.Manutencao(0))
@@ -46,29 +52,41 @@ class Aviao(Gene):
     self.restricoes.adicionar_restricao(restricoes.Manutencao(47))
 
     # Definição da primeira viagem:
-    # Pega primeira cidade (Q foi sorteada)
+    # Escolhe a primeira rota (Juntamente com o aeroporto de origem) 
     ultima_rota = random.choice(self.rotasVoo[:-1])
     origem_rota = ultima_rota[0]
+    # Essa variável sempre vai ser a quantidade de slots que a rota vai ocupar
     tempo_viagem = int(ultima_rota[2] * 2)
     ultimo_indice = 2
 
+    # Para cada slot, seta a restrição "RotaEspecifica", com o indice e a rota escolhida
     for i in range(ultimo_indice, ultimo_indice + tempo_viagem):
       self.restricoes.adicionar_restricao(restricoes.RotaEspecifica(i, ultima_rota))
-    self.qtdVoos += 1
+    self.qtdVoos += 1 # Incrementa a quantidade de voos, para ser usado pela classe "LinhasAereas"
 
+    # Incrementa com a quantidade de slots, para sabermos sempre qual é o índice atual
     ultimo_indice += tempo_viagem
+    # Entre as viagens, sempre há 3 slots de manutenção (que é o embarque e desembarque)
     for i in range(0, 3):
       self.restricoes.adicionar_restricao(restricoes.Manutencao(ultimo_indice + i))
-    ultimo_indice += 3
+    ultimo_indice += 3 # Somamos também o slot de manutenção
 
     # print(f"limite_fim: {limite_fim}")
+
+    # Até o slot 47, tentaremos definir rotas de forma aleatória
     while ultimo_indice < 47:
       ultimo_destino = ultima_rota[1]
+      # Algumas rotas não conseguem preencher todos os horários sempre, então
+      # randomizamos até chegar perto do final.
+
+      # O numero 10 foi escolhido fazendo testes, se passar disso, corre o risco de dar erro
       if 48 - ultimo_indice > 10:
+        # Com base no destino da última viagem, decide a próxima rota
         proximas_rotas = [x for x in self.rotasVoo if x[0] == ultimo_destino]
         proxima_rota = random.choice(proximas_rotas)
         tempo_viagem = int(proxima_rota[2] * 2)
 
+        # Adiciona as restrições para os slots
         for i in range(ultimo_indice, ultimo_indice + tempo_viagem):
           self.restricoes.adicionar_restricao(restricoes.RotaEspecifica(i, proxima_rota))
 
@@ -76,18 +94,23 @@ class Aviao(Gene):
         for i in range(0, 3):
           self.restricoes.adicionar_restricao(restricoes.Manutencao(ultimo_indice + i))
         ultimo_indice += 3
-        ultima_rota = proxima_rota
-        self.qtdVoos += 1
+        ultima_rota = proxima_rota # A próxima rota que tinhamos escolhido vira a última rota que o avião passou
+        self.qtdVoos += 1 # Incrementamos a quantidade de voos aqui também
       else:
+        # Caso estejamos perto do fim, voltamos ao aeroporto de origem
         proximas_rotas = [x for x in self.rotasVoo if x[0] == ultimo_destino and x[1] == origem_rota]
         proxima_rota = proximas_rotas[0] if len(proximas_rotas) > 0 else None
 
         # Não dá tempo de fazer outras viagens, então entrará em manutenção
+        # Esse if é caso o avião já esteja no aeroporto de origem, com isso,
+        # Os índices restantes serão de manutenção.
         if proxima_rota is None:
           for i in range(ultimo_indice, 47):
             self.restricoes.adicionar_restricao(restricoes.Manutencao(i))
           break
 
+        # Caso não esteja no aeroporto de origem, traçaremos uma rota até lá,
+        # e então, os índices restantes serão de manutenção (caso haja)
         tempo_viagem = int(proxima_rota[2] * 2)
         for i in range(ultimo_indice, ultimo_indice + tempo_viagem):
           self.restricoes.adicionar_restricao(restricoes.RotaEspecifica(i, proxima_rota))
@@ -110,17 +133,15 @@ class Aviao(Gene):
     # Tive que mudar, pra ficar mais fácil de lidar com os dados
     # TODO: Conversão pra leitura (0 = "00:00", 1 = "00:30"...)
 
+    # 0 -> 00:00, 1 -> 00:30, 2 -> 01:00 ...
     self.variaveis = list(range(0, 48))
 
+    # O domínio do gene são as rotas
     for variavel in self.variaveis:
       self.dominios[variavel] = self.rotasVoo
 
   def gerar_gene(self):
-    slot_manutencao = self.rotasVoo[-1]
-    temp_lista = self.rotasVoo[:len(self.rotasVoo)-1]
-    random.shuffle(temp_lista)
     self.qtdVoos = 0
-    self.rotasVoo = [*temp_lista, slot_manutencao]
     self.definir_variaveis()
     self.definir_restricoes()
     self.rota = self.restricoes.busca_backtracking()
