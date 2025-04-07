@@ -51,29 +51,6 @@ class Aviao(Gene):
     origem_rota = ultima_rota[0]
     tempo_viagem = int(ultima_rota[2] * 2)
     ultimo_indice = 2
-    
-    ###############################
-    ### Restrição destino final ###
-    ###############################
-
-    # possives_rotas_finais = [x for x in self.rotasVoo if x[1] == ultima_rota[0]]
-    # rota_final = random.choice(possives_rotas_finais)
-    # rota_final_tempo = int(rota_final[2] * 2)
-    #
-    # # Até quando o while vai:
-    # limite_fim = 46 - rota_final_tempo - 7
-    #
-    # # Manutenções da última rota
-    # for i in range(47 - rota_final_tempo, 47):
-    #   self.restricoes.adicionar_restricao(restricoes.RotaEspecifica(i, rota_final))
-    #
-    # self.restricoes.adicionar_restricao(restricoes.TempoViagem(46 - rota_final_tempo, rota_final_tempo))
-    #
-    # # Manutenções da última rota
-    # for i in range(47 - rota_final_tempo - 3, 47 - rota_final_tempo):
-    #   self.restricoes.adicionar_restricao(restricoes.Manutencao(i))
-
-    ################################################################
 
     for i in range(ultimo_indice, ultimo_indice + tempo_viagem):
       self.restricoes.adicionar_restricao(restricoes.RotaEspecifica(i, ultima_rota))
