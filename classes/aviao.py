@@ -4,7 +4,7 @@ import classes.restricoes.restricoes as restricoes
 import random
 
 class Aviao(Gene):
-  def __init__(self, linhas_aereas):
+  def __init__(self, linhas_aereas = None):
     # Lista incluindo o local de partida, chegada, tempo de voo e número de voos
     # As tuplas representam: Origem, Destino, Tempo
     # (None, None, 0) = Tempo ocioso

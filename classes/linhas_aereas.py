@@ -10,6 +10,7 @@ class LinhasAereas(Individuo):
     self.genes = []
     self.voosNecessarios = 0
     self.qtdAvioes = random.randint(2, 12)
+    self.chanceMutacao = 0.3
     self.rotasVoo = [
       # Local de partida        Local de chegada          Hrs   Num
       ("São Paulo (GRU)",       "Rio de Janeiro (GIG)",   1.0,  10),
@@ -41,6 +42,8 @@ class LinhasAereas(Individuo):
     self.gerar_individuo()
 
   def mutacao(self):
+    if random.randint(0, 100) / 100 >= self.chanceMutacao:
+      return self
     return LinhasAereas()
 
   def crossover(self):
@@ -48,7 +51,6 @@ class LinhasAereas(Individuo):
 
   def fitness(self):
     # qtdAvioes, voosNecessarios, totalVoos
-    # fitness = qtdAvioes / totalVoos
     return (1 - (self.qtdAvioes / (self.qtdAvioes + 150))) * ((self.totalVoos / 84)**2)
     # return (self.totalVoos / self.qtdAvioes) * self.voosNecessarios
   
@@ -77,6 +79,7 @@ Qtd. de aviões: {self.qtdAvioes}
 class PopulacaoLinhasAereas(Populacao):
   def __init__(self, Individuo_classe, tamanho_populacao=10):
     super().__init__(Individuo_classe, tamanho_populacao)
+    self.chanceCrossover = 0.2
   
   def inicializacao(self):
     pass
@@ -85,6 +88,9 @@ class PopulacaoLinhasAereas(Populacao):
     return super().mutacao()
   
   def crossover(self):
+    if random.randint(0, 100) / 100 >= self.chanceCrossover:
+      return self.populacao
+
     tamanho_pop = len(self.populacao)
     populacao1 = self.populacao[:tamanho_pop // 2]
     populacao2 = self.populacao[tamanho_pop // 2:]
