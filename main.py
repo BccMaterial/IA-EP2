@@ -130,8 +130,7 @@ print("Fitness:", fitness(melhor))
 
 # populacao = PopulacaoLinhasAereas(LinhasAereas, tamanho_populacao=150)
 # genetico = AlgoritmoGeneticoPopulacao(populacao)
-
-# individuo_adaptado = genetico.rodar(max_geracoes = 20, imprimir_em_geracaoes=2)
+# individuo_adaptado = genetico.rodar(max_geracoes = 5, imprimir_em_geracaoes=1)
 
 # print("\nPrimeiro mais adaptado:")
 # print(f"Quantidade de gerações: {genetico.qtd_geracoes()}")

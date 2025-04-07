@@ -42,6 +42,10 @@ class LinhasAereas(Individuo):
     self.gerar_individuo()
 
   def mutacao(self):
+    """
+    Com base na probabilidade da mutação, decide se vai alterar o indivíduo, ou
+    se vai mantê-lo como está atualmente.
+    """
     if random.randint(0, 100) / 100 >= self.chanceMutacao:
       return self
     return LinhasAereas()
@@ -50,8 +54,17 @@ class LinhasAereas(Individuo):
     pass
 
   def fitness(self):
+    """
+    Calcula com base na quantidade de aviões, voos e voos necessários.
+    A função escolhida determina com essas variáveis o quão próximo está de um
+    indivíduo bom. Quanto menos aviões e mais voos, mais próximo de 0 estará.
+
+    Obs.: O algoritmo genético vai sempre escolher o melhor indivíduo, mesmo que
+    Passe da quantidade de voos necessários.
+    """
     # qtdAvioes, voosNecessarios, totalVoos
-    return (1 - (self.qtdAvioes / (self.qtdAvioes + 150))) * ((self.totalVoos / 84)**2)
+    k = 236
+    return (1 - (self.qtdAvioes / (self.qtdAvioes + k))) * ((self.totalVoos / self.voosNecessarios)**2)
     # return (self.totalVoos / self.qtdAvioes) * self.voosNecessarios
   
   # Override do "to_string"
@@ -70,7 +83,10 @@ Qtd. de aviões: {self.qtdAvioes}
 """
 
   def gerar_individuo(self):
-    # Pra cada avião, cria um objeto Aviao
+    """
+    Pra cada avião, cria um objeto Aviao. Ao criar um objeto Aviao novo,
+    É gerado um gene, onde possui a rota do avião, criada de forma aleatória
+    """
     for _ in range(self.qtdAvioes):
       aviao = Aviao(self)
       self.genes.append(aviao)
@@ -88,6 +104,12 @@ class PopulacaoLinhasAereas(Populacao):
     return super().mutacao()
   
   def crossover(self):
+    """
+    Overview
+    O crossover divide a população em dois grupos, e para cada indivíduo nos dois grupos,
+    pegar uma quantidade aleatória de genes de cada um, e a partir disso, cria dois
+    novos indivíduos.
+    """
     if random.randint(0, 100) / 100 >= self.chanceCrossover:
       return self.populacao
 
