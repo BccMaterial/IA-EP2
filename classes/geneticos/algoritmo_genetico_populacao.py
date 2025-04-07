@@ -10,7 +10,7 @@ class AlgoritmoGeneticoPopulacao:
   def qtd_geracoes(self):
     return self.geracoes
 
-  def rodar(self, max_geracoes = 1000, imprimir_em_geracaoes = 100, erro_min = 0.01):
+  def rodar(self, max_geracoes = 1000, imprimir_em_geracaoes = 100, erro_min = 0.00001):
     print(f"Geração: {self.geracoes}, Erro: {round(self.erro,3)}, {self.populacao.top_individuo().imprime()}")
 
     while True:

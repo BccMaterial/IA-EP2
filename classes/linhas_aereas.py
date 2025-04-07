@@ -6,10 +6,10 @@ from classes.aviao import Aviao
 
 # OBS: Ao gerar o indivíduo, satisfazer as restrições
 class LinhasAereas(Individuo):
-  def __init__(self, qtdAvioes):
+  def __init__(self):
     self.genes = []
     self.voosNecessarios = 0
-    self.qtdAvioes = qtdAvioes
+    self.qtdAvioes = random.randint(2, 12)
     self.rotasVoo = [
       # Local de partida        Local de chegada          Hrs   Num
       ("São Paulo (GRU)",       "Rio de Janeiro (GIG)",   1.0,  10),
@@ -31,7 +31,7 @@ class LinhasAereas(Individuo):
     # Conforme vamos preenchendo as viagens, vamos adicionando nesse array.
     # Com isso, sabemos que a rota SP-RJ já foi preenchida, logo, não precisa 
     # mais de nenhuma rota a mais dessa.
-    self.qtdPorRota = [0 for x in self.rotasVoo]
+    self.qtdPorRota = [0 for _ in self.rotasVoo]
 
     # Visita cada tupla e retorna o valor total de voos
     self.voosNecessarios = sum([x[3] for x in self.rotasVoo])
@@ -41,17 +41,22 @@ class LinhasAereas(Individuo):
     self.gerar_individuo()
 
   def mutacao(self):
-    pass
+    return LinhasAereas()
 
   def crossover(self):
     pass
 
   def fitness(self):
+    # qtdAvioes, voosNecessarios, totalVoos
     # fitness = qtdAvioes / totalVoos
-    return len(self.genes) / self.totalVoos
+    return (1 - (self.qtdAvioes / (self.qtdAvioes + 150))) * ((self.totalVoos / 84)**2)
+    # return (self.totalVoos / self.qtdAvioes) * self.voosNecessarios
   
   # Override do "to_string"
   def __str__(self):
+    return self.imprime()
+
+  def imprime(self):
     # Não tem identação na string pra não colocar tab na hora de printar
     return \
     f"""
@@ -68,7 +73,27 @@ Qtd. de aviões: {self.qtdAvioes}
       aviao = Aviao(self)
       self.genes.append(aviao)
       self.totalVoos += aviao.qtdVoos
-    pass
 
 class PopulacaoLinhasAereas(Populacao):
-  pass
+  def __init__(self, Individuo_classe, tamanho_populacao=10):
+    super().__init__(Individuo_classe, tamanho_populacao)
+  
+  def inicializacao(self):
+    pass
+  
+  def mutacao(self):
+    return super().mutacao()
+  
+  def crossover(self):
+    tamanho_pop = len(self.populacao)
+    populacao1 = self.populacao[:tamanho_pop // 2]
+    populacao2 = self.populacao[tamanho_pop // 2:]
+    
+    nova_populacao = []
+    for ind1, ind2 in zip(populacao1, populacao2):
+        ponto_corte = random.randint(1, len(ind1.genes) - 1)
+        filho1 = ind1.genes[:ponto_corte] + ind2.genes[ponto_corte:]
+        filho2 = ind2.genes[:ponto_corte] + ind1.genes[ponto_corte:]
+        nova_populacao.extend([filho1, filho2])
+    return nova_populacao
+

@@ -1,7 +1,9 @@
 class Populacao:
-  def __init__(self, tamanho_populacao=10):
+  def __init__(self, Individuo_classe, tamanho_populacao=10):
     self.tamanho_populacao = tamanho_populacao
     self.populacao = []
+    for _ in range(tamanho_populacao):
+      self.populacao.append(Individuo_classe())
     self.fitness = 0
 
   def inicializacao(self):
