@@ -127,12 +127,3 @@ def algoritmo_genetico():
 melhor = algoritmo_genetico()
 print("Melhor indivíduo:", melhor)
 print("Fitness:", fitness(melhor))
-
-# populacao = PopulacaoLinhasAereas(LinhasAereas, tamanho_populacao=150)
-# genetico = AlgoritmoGeneticoPopulacao(populacao)
-# individuo_adaptado = genetico.rodar(max_geracoes = 5, imprimir_em_geracaoes=1)
-
-# print("\nPrimeiro mais adaptado:")
-# print(f"Quantidade de gerações: {genetico.qtd_geracoes()}")
-# print(f"Erro: {genetico.erro_final()}")
-# print(individuo_adaptado.imprime())
